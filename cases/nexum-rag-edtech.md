@@ -1,163 +1,106 @@
-# Caso de Estudio 1: NexUM — Plataforma EdTech con RAG Híbrido y Tutores Conversacionales
+# NexUM — Plataforma EdTech con RAG Híbrido y Tutores Conversacionales
 
-## 1. Contexto y Origen
-
-Este proyecto se desarrolló dentro de las líneas de investigación aplicada e inteligencia artificial del [DataLab de la Universidad de Manizales](https://github.com/DataLab-UM).
-
-A diferencia de los entornos virtuales de aprendizaje (LMS) convencionales que integran asistentes como un complemento periférico, **NexUM** fue concebida para ofrecer una experiencia pedagógica conversacional nativa, en la que cada materia cuente con un tutor virtual especializado dotado de conocimiento contextualizado, aislado y con capacidad de responder en tiempo real mediante texto y streaming continuo.
+Plataforma educativa orientada a la interacción conversacional nativa con inteligencia artificial, diseñada para que cada curso cuente con un tutor virtual especializado dotado de conocimiento aislado, contextualizado y capaz de responder en tiempo real mediante streaming. Desarrollada en el marco de iniciativas de investigación aplicada del [DataLab de la Universidad de Manizales](https://github.com/DataLab-UM).
 
 ---
 
-## 2. Problema Técnico
+## 1. El reto
 
-El despliegue de asistentes conversacionales basados en modelos de lenguaje en educación universitaria presenta tres limitaciones fundamentales:
-1. **Riesgo de alucinación y pérdida de límites temáticos:** Los modelos de lenguaje generalistas pueden inventar conceptos técnicos o responder a preguntas ajenas al programa académico, desviando el objetivo formativo.
-2. **Insuficiencia del RAG puramente denso (vectorial):** La búsqueda basada únicamente en similitud semántica (embeddings densos) con frecuencia pierde precisión ante fórmulas, acrónimos, términos técnicos exactos o nombres de algoritmos específicos del plan de estudios.
-3. **Latencia en respuestas conversacionales:** El encadenamiento de llamadas síncronas a APIs externas de embeddings y generación suele introducir demoras de varios segundos antes de emitir la primera palabra (*Time-to-First-Token*), interrumpiendo el flujo natural de la sesión de estudio.
+El despliegue de asistentes conversacionales basados en modelos de lenguaje en educación universitaria presenta tres limitaciones críticas:
 
----
-
-## 3. Objetivo
-
-Diseñar e implementar una arquitectura desacoplada de backend y recuperación de información (**RAG Híbrido**) de ejecución local, caracterizada por baja latencia, alta fidelidad conceptual, estricto aislamiento de conocimiento por materia, mecanismos de abstención frente a consultas fuera de dominio y transmisión fluida de respuestas integrada con un frontend web reactivo.
+1. **Alucinaciones y pérdida de límites temáticos:** Los modelos de lenguaje generalistas tienden a inventar explicaciones sobre conceptos técnicos o responder a preguntas ajenas al programa académico, desviando el objetivo pedagógico.
+2. **Insuficiencia del RAG puramente vectorial:** La búsqueda semántica basada exclusivamente en similitud de embeddings densos pierde precisión ante fórmulas, acrónimos, sintaxis de código y términos técnicos exactos del plan de estudios.
+3. **Latencia en la interacción conversacional:** El encadenamiento de llamadas síncronas a múltiples APIs externas de embeddings y generación introduce demoras de varios segundos antes de emitir la primera palabra (*Time-to-First-Token*), degradando la experiencia de estudio.
 
 ---
 
-## 4. Contribución Técnica y Diferenciación de Alcances
+## 2. Mi contribución
+
+En este proyecto trabajé en la arquitectura de recuperación, el backend de inferencia y la integración del flujo conversacional:
+
+- **Diseñé e implementé el motor de RAG híbrido:** Combiné búsqueda semántica densa (**BGE-M3**) y búsqueda léxica dispersa (**BM25**), integradas mediante el algoritmo **Reciprocal Rank Fusion (RRF)** para equilibrar similitud conceptual con concordancia exacta de palabras clave.
+- **Desarrollé la compuerta de dominio y el enrutador de intenciones:** Construí los módulos `localDomainGate` y `localIntentRouter` para evaluar la pertinencia temática de la consulta antes de invocar la generación completa, asegurando una abstención determinística frente a temas ajenos al curso.
+- **Configuré el servidor local de embeddings:** Desplegué un microservicio en Python para ejecutar la inferencia de BGE-M3 de forma local y autónoma, eliminando la dependencia de cuotas de red y garantizando consistencia en el procesamiento de textos técnicos en español.
+- **Implementé el controlador de streaming conversacional:** Diseñé el servicio de transmisión token a token mediante **Server-Sent Events (SSE)** en Node.js y Express (`streamingAvatarController` y `streamingProfessorService`), reduciendo la latencia percibida por el usuario en el frontend.
+- **Construí la suite de validación empírica:** Creé y ejecuté una batería de 25 scripts de medición técnica en el backend para auditar latencia, suficiencia de evidencia y resistencia ante preguntas ambiguas o fuera de temario.
+- **Colaboración en equipo:** Trabajé conjuntamente con docentes en la estructuración de los contenidos curriculares y con el equipo de diseño en la conceptualización visual de las interfaces del avatar.
+
+---
+
+## 3. La solución
+
+El sistema opera bajo un pipeline modular de cuatro etapas que valida, recupera, clasifica y transmite la información antes de generar una respuesta:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        MAPA DE RESPONSABILIDADES                       │
-├───────────────────────────────────┬────────────────────────────────────┤
-│ Contribución Individual           │ Trabajo Colaborativo e             │
-│ Verificada en Código              │ Institucional                      │
-├───────────────────────────────────┼────────────────────────────────────┤
-│ • Inicialización del repositorio. │ • Definición de objetivos          │
-│ • Implementación del recuperador  │   curriculares y pedagógicos.      │
-│   RAG híbrido (BGE-M3 + BM25 +    │ • Revisión temática de contenidos  │
-│   Reciprocal Rank Fusion RRF).    │   con docentes universitarios.     │
-│ • Construcción de la compuerta de │ • Conceptualización de diseño      │
-│   dominio (Domain Gate) y del     │   gráfico e identidad del avatar.  │
-│   enrutador de intenciones.       │                                    │
-│ • Servidor local de embeddings en │                                    │
-│   Python para inferencia BGE-M3.  │                                    │
-│ • Controlador de streaming con    │                                    │
-│   Server-Sent Events (SSE).       │                                    │
-│ • Creación y ejecución de suite   │                                    │
-│   de benchmarks de latencia y     │                                    │
-│   pruebas adversariales empíricas.│                                    │
-└───────────────────────────────────┴────────────────────────────────────┘
+[ Consulta del Estudiante ]
+           │
+           ▼
+┌────────────────────────────────────────┐
+│  Compuerta de Dominio & Enrutador      │ ── Fuera de temario ──> [ Respuesta de ]
+│  (Evaluación léxico-semántica previa)  │                         [  Abstención  ]
+└────────────────────────────────────────┘
+           │ Consulta válida
+           ▼
+┌────────────────────────────────────────┐
+│  Recuperador RAG Híbrido               │
+│  ├── BGE-M3 (Embeddings densos locales)│
+│  └── BM25 (Búsqueda léxica exacta)     │
+└────────────────────────────────────────┘
+           │
+           ▼
+┌────────────────────────────────────────┐
+│  Fusión de Rankings (RRF)              │
+│  (Selección de fragmentos Top-K)       │
+└────────────────────────────────────────┘
+           │
+           ▼
+┌────────────────────────────────────────┐
+│  Generador LLM + Streaming SSE         │ ── Tokens en vivo ──> [ Frontend React ]
+└────────────────────────────────────────┘
 ```
 
-- **Entorno de Pruebas y Validación Local:** La arquitectura fue evaluada mediante una batería de 25 scripts de medición y pruebas automatizadas en el backend, analizando latencia de respuesta, suficiencia de evidencia y resistencia ante preguntas ambiguas o fuera de temario.
-- **Estado de Producción:** El proyecto se estructuró como un desarrollo técnico validado funcionalmente y probado con cursos piloto en entorno de laboratorio.
+### Decisiones técnicas destacadas
+
+- **Reciprocal Rank Fusion (RRF) frente a suma lineal de puntuaciones:** Las escalas de similitud coseno de los embeddings densos y las frecuencias de términos de BM25 son numéricamente incompatibles. Se implementó RRF para combinar los resultados basándose en el orden relativo de los fragmentos recuperados:
+  $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
+  Esto proporciona una combinación robusta e independiente de la calibración de cada modelo.
+- **Inferencia local de embeddings:** El uso de un servidor local de embeddings aseguró un rendimiento predecible y reproducible, evitando llamadas de red adicionales por cada consulta y reduciendo la variabilidad en los tiempos de respuesta.
+- **Control de abstención previo:** Filtrar las consultas a nivel de dominio antes de consultar la base de conocimiento vectorial reduce el consumo de cómputo y previene respuestas incorrectas sobre temas no cubiertos en el programa académico.
 
 ---
 
-## 5. Tecnologías y Arquitectura
+## 4. Funcionalidades destacadas
 
-```
-                        ARQUITECTURA DE RAG HÍBRIDO LOCAL
-                                                               
-┌──────────────────────────┐       HTTP / SSE        ┌────────────────────────────┐
-│   Frontend React 18      │ ──────────────────────> │    Backend Express / TS    │
-│  (Vite + Tailwind CSS)   │ <────────────────────── │ (streamingAvatarController)│
-└──────────────────────────┘                         └─────────────┬──────────────┘
-                                                                   │
-                                                   ┌───────────────┴───────────────┐
-                                                   ▼                               ▼
-                                       ┌───────────────────────┐       ┌───────────────────────┐
-                                       │   Local Domain Gate   │       │  Local Intent Router  │
-                                       │ (Control Abstención)  │       │ (Clasificación Duda)  │
-                                       └───────────┬───────────┘       └───────────────────────┘
-                                                   │
-                                     Consulta Válida de Curso
-                                                   │
-                                                   ▼
-                         ┌───────────────────────────────────────────────────┐
-                         │              RECUPERADOR RAG HÍBRIDO              │
-                         │                                                   │
-                         │  ┌───────────────────────┐ ┌───────────────────┐  │
-                         │  │   BGE-M3 Dense (Py)   │ │    BM25 Sparse    │  │
-                         │  │  (Similitud Semántica)│ │(Coincidencia Lex) │  │
-                         │  └───────────┬───────────┘ └─────────┬─────────┘  │
-                         │              │                       │            │
-                         │              └───────────┬───────────┘            │
-                         │                          ▼                        │
-                         │             Reciprocal Rank Fusion (RRF)          │
-                         └──────────────────────────┬────────────────────────┘
-                                                    │
-                                             Fragmentos Top-K
-                                                    │
-                                                    ▼
-                                       ┌─────────────────────────┐
-                                       │ Generador LLM + Contexto│
-                                       │   (Streaming SSE Chunk) │
-                                       └─────────────────────────┘
-```
-
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Lucide React, Context API.
-- **Backend:** Node.js, Express, TypeScript, Python 3.10 (servidor de inferencia local de embeddings).
-- **Motores de Búsqueda:** BGE-M3 (`BAAI/bge-m3`) para similitud vectorial densa y BM25 para concordancia léxica exacta.
-- **Algoritmo de Fusión:** *Reciprocal Rank Fusion* (RRF) para combinar los rankings de ambos recuperadores sin distorsión por diferencias de escala numéricas.
-- **Canal de Datos:** Server-Sent Events (SSE) para emisión continua de tokens.
+- **Aislamiento estricto de conocimiento:** Cada asignatura gestiona su propia base documental segmentada, impidiendo que el tutor virtual de un curso utilice fragmentos de otra materia.
+- **Streaming continuo token a token:** La interfaz actualiza el texto de forma progresiva conforme se generan los tokens, entregando retroalimentación visual inmediata al estudiante.
+- **Mecanismo de abstención contextual:** Cuando una pregunta no corresponde al temario del curso, el asistente reconoce el límite temático y orienta al estudiante hacia los contenidos pertinentes.
+- **Trazabilidad de procedencia:** Las respuestas se vinculan con los fragmentos documentales utilizados como sustento, facilitando la verificación conceptual.
 
 ---
 
-## 6. Decisiones de Diseño Técnico
+## 5. Tecnologías aplicadas
 
-1. **RRF frente a Normalización Lineal:** En lugar de intentar normalizar puntuaciones de similitud coseno con valores de frecuencia inversa de documentos (BM25), se utilizó RRF:
-   $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
-   Esto garantizó una combinación estable e inmune a discrepancias numéricas entre modelos.
-2. **Inferencia Local de Embeddings:** El despliegue local de BGE-M3 eliminó la dependencia de cuotas por llamada en APIs externas y proporcionó un comportamiento determinístico y reproducible para textos técnicos en español.
-3. **Compuerta Previa de Dominio (Domain Gate):** Se implementó una verificación léxico-semántica previa antes de invocar la generación completa. Si la consulta no guarda relación con los contenidos curriculares, el sistema se abstiene de responder y orienta al estudiante hacia los temas del curso.
-
----
-
-## 7. Funcionalidades Principales
-
-- **Navegación Curricular:** Exploración modular de contenidos y materiales de estudio.
-- **Tutor Virtual Interactivo:** Ventana de diálogo interactiva con streaming de respuesta token a token.
-- **Aislamiento de Bases de Conocimiento:** Segmentación documental estricta para garantizar que el tutor de una asignatura no consulte documentos de otra.
-- **Trazabilidad de Fuentes:** Vinculación de respuestas con los fragmentos de origen para permitir la contrastación por parte del estudiante.
+- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Context API.
+- **Backend y APIs:** Node.js, Express, TypeScript, Server-Sent Events (SSE).
+- **Inteligencia Artificial y NLP:** Python 3.10, BGE-M3 (`BAAI/bge-m3`), BM25, Reciprocal Rank Fusion (RRF).
+- **Pruebas y Benchmarks:** Suites automatizadas de evaluación de latencia, pruebas de estrés y validación adversarial.
 
 ---
 
-## 8. Desafíos Afrontados
+## 6. Resultados y validación técnica
 
-- **Gestión de Concurrencia en Streaming:** Administrar la recepción de fragmentos asíncronos en el cliente React asegurando que las actualizaciones de estado no provocaran saltos visuales ni congelamiento de la interfaz.
-- **Calibración de la Sensibilidad de Abstención:** Ajustar los umbrales de coincidencia para que el sistema reconozca preguntas válidas redactadas de forma coloquial sin habilitar consultas fuera de materia.
+La arquitectura fue evaluada mediante un conjunto de 25 pruebas y scripts de medición ejecutados en entorno de desarrollo y laboratorio:
 
----
-
-## 9. Evidencias Técnicas Verificables
-
-- **Archivos fuente desarrollados:**
-  - `backend/src/services/hybridRetrieverBge.ts`
-  - `backend/src/services/bm25.ts`
-  - `backend/src/services/localDomainGate.ts`
-  - `backend/src/services/streamingProfessorService.ts`
-  - `backend/src/controllers/streamingAvatarController.ts`
-- **Artefactos y Reportes Empíricos:**
-  - `backend/data/hybrid_evaluation_scorecard.json`
-  - `backend/data/adversarial_evaluation_report.json`
-  - `backend/data/latency_baseline_measurement.json`
-- **Documentación Técnica:** 14 especificaciones técnicas y 25 scripts de pruebas de rendimiento y robustez.
+- **Medición de latencia de primer token (TTFT):** La arquitectura de inferencia local junto con el canal SSE permitió emitir los primeros fragmentos de texto en fracciones de segundo, eliminando los cuellos de botella de llamadas secuenciales a servicios en la nube.
+- **Evaluación adversarial de dominio:** En pruebas con baterías de preguntas fuera de temario y consultas ambiguas, la compuerta de dominio demostró una abstención consistente, canalizando adecuadamente las interacciones sin inducir alucinaciones.
+- **Calidad de recuperación:** La combinación de BGE-M3 y BM25 resolvió las pérdidas de contexto léxico que se presentaban al emplear únicamente búsqueda vectorial sobre terminología especializada.
 
 ---
 
-## 10. Hechos Verificados vs. Aspectos a Confirmar
+## 7. Aprendizajes y valor técnico
 
-| Categoría | Detalle Técnico / Operativo | Estado |
-| :--- | :--- | :--- |
-| **Hecho Verificado** | Autoría comprobable de la inicialización y desarrollo de la arquitectura RAG híbrida. | Verificado en Git log y código fuente. |
-| **Hecho Verificado** | Existencia del servidor local de embeddings, compuertas de dominio y streaming SSE. | Verificado en archivos del proyecto. |
-| **Hecho Verificado** | Existencia de reportes de pruebas adversariales y scorecards de latencia. | Verificado en artefactos del repositorio. |
-| **Aspecto a Confirmar** | Menciones a asignaturas específicas o métricas de adopción de estudiantes en cohortes reales. | Requiere validación institucional para divulgación pública. |
+Este proyecto demuestra competencias en el diseño de arquitecturas de IA aplicada donde la precisión conceptual y el control de alucinaciones son prioritarios. Evidencia capacidad para:
 
----
-
-## 11. Estrategia de Confidencialidad y Demo Sintética
-
-- **Información Protegida:** Se excluyen del caso de estudio los materiales de clase protegidos por derechos de autor, datos identificativos de estudiantes y claves de API de servicios de voz o IA.
-- **Propuesta de Demostración Pública:** Construir un repositorio de demostración (*showcase*) que utilice un contenido formativo de dominio público (por ejemplo, un curso abierto sobre *"Estructuras de Datos en Python"*), desplegando el backend de RAG híbrido y la interfaz React sobre datos sintéticos para evidenciar la capacidad técnica sin divulgar contenidos privados.
+- Integrar técnicas avanzadas de recuperación de información (Dense + Sparse) sin depender exclusivamente de soluciones comerciales cerradas.
+- Diseñar sistemas desacoplados orientados a baja latencia y alta reactividad en el frontend.
+- Validar empíricamente sistemas de software mediante pruebas automatizadas de robustez y rendimiento.

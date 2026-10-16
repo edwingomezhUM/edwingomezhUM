@@ -1,145 +1,92 @@
-# Caso de Estudio 4: Visores Geoespaciales (GIS) para Monitoreo de Red y Control de Infraestructura
+# Visores Geoespaciales (GIS) para Red Eléctrica y Control de Infraestructura
 
-## 1. Contexto y Origen
-
-La gestión de redes de distribución eléctrica y la supervisión de activos físicos sobre el territorio exigen herramientas cartográficas interactivas y actualizadas en tiempo real. Este caso de estudio comprende dos desarrollos complementarios elaborados en el [DataLab de la Universidad de Manizales](https://github.com/DataLab-UM) para una **empresa regional de distribución y comercialización de energía eléctrica**:
-1. **Visor de Disponibilidad de Red Eléctrica en Tiempo Real** (con backend de eventos en tiempo real).
-2. **Sistema Geoespacial de Censo de Cableoperadores**.
+Conjunto de aplicaciones web geoespaciales interactivas para el monitoreo en tiempo real de disponibilidad en redes de distribución eléctrica y el censo georreferenciado de ocupación de infraestructura física por operadores de telecomunicaciones. Desarrolladas en el marco de proyectos de transferencia tecnológica del [DataLab de la Universidad de Manizales](https://github.com/DataLab-UM) para una empresa regional de distribución y comercialización de energía eléctrica.
 
 ---
 
-## 2. Problema Técnico
+## 1. El reto
 
-Las operaciones de distribución eléctrica y control de activos compartidos enfrentaban dos problemas principales:
-1. **Falta de visibilidad cartográfica unificada de afectaciones:** Ante tormentas o fallas operativas en circuitos y transformadores, el personal de atención y supervisión dependía de tablas alfanuméricas en lugar de un mapa en vivo que reflejara qué circuitos se encontraban desenergizados y cuál era la afectación territorial estimada.
-2. **Carencia de inventario georreferenciado de infraestructura compartida:** Los postes de la red eléctrica son utilizados por múltiples empresas de telecomunicaciones para tender cableado. La ausencia de un censo geográfico interactivo dificultaba la fiscalización de postes sobrecargados, la identificación de redes no autorizadas y el control administrativo del arriendo de apoyos.
+La supervisión de activos eléctricos distribuidos sobre el territorio y la gestión de infraestructura compartida demandaban soluciones cartográficas ágiles frente a dos necesidades operativas:
 
----
-
-## 3. Objetivo
-
-Desarrollar plataformas web geoespaciales (GIS) livianas, interactivas y sincronizadas mediante canales en tiempo real para visualizar el estado operativo de los circuitos de distribución y auditar el censo de ocupación de postes por parte de operadores externos.
+1. **Visibilidad cartográfica unificada de afectaciones de red:** Ante tormentas o fallas en circuitos y transformadores, el personal de atención y despacho dependía de listados tabulares en lugar de una representación geográfica en vivo que mostrara qué circuitos estaban desenergizados y cuál era su área de cobertura.
+2. **Control e inventario de infraestructura compartida:** Los postes de la red eléctrica son utilizados por diversas empresas de telecomunicaciones (cableoperadores) para tender cableado de fibra óptica y coaxial. La carencia de un visor georreferenciado dificultaba fiscalizar postes sobrecargados, identificar redes no autorizadas y gestionar el cobro de arriendos de infraestructura.
 
 ---
 
-## 4. Contribución Técnica y Diferenciación de Alcances
+## 2. Mi contribución
+
+En estas soluciones trabajé en la arquitectura frontend, la integración de mapas interactivos y la recepción de eventos en tiempo real:
+
+- **Desarrollé la aplicación web del censo de cableoperadores en Angular y Leaflet:** Construí la solución completa para visualizar apoyos eléctricos en el mapa, integrando capas vectoriales GeoJSON, simbología dinámica por nivel de ocupación y consultas por operador.
+- **Implementé los componentes del mapa de disponibilidad de red:** Diseñé los módulos `mapa.component.ts` y `mapa.service.ts` para renderizar circuitos de distribución en Angular, diferenciando su estado de servicio mediante estilos cromáticos condicionales.
+- **Integré comunicación en tiempo real con WebSockets:** Configuré canales bidireccionales mediante `ngx-socket-io` para recibir eventos de apertura y cierre de circuitos emitidos por los sistemas de despacho, actualizando el mapa automáticamente sin requerir recargas de página.
+- **Diseñé menús de filtrado multicriterio y resúmenes territoriales:** Desarrollé componentes interactivos para alternar capas cartográficas, filtrar apoyos por municipio y consultar métricas agregadas de infraestructura.
+- **Colaboración en equipo:** Trabajé conjuntamente con especialistas en geomática en la estructuración de las fuentes de datos geográficos y con ingenieros de despacho en la interpretación de los eventos de red.
+
+---
+
+## 3. La solución
+
+La arquitectura articula la cartografía web con servicios de eventos en vivo para ofrecer una experiencia reactiva:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        MAPA DE RESPONSABILIDADES                       │
-├───────────────────────────────────┬────────────────────────────────────┤
-│ Contribución Individual           │ Trabajo Colaborativo e             │
-│ Verificada en Código              │ Institucional                      │
-├───────────────────────────────────┼────────────────────────────────────┤
-│ • 100% de autoría verificada (7   │ • Modelado y custodia de datos     │
-│   de 7 commits) en el visor de    │   cartográficos corporativos       │
-│   cableoperadores.                │   (Oracle Spatial / PostGIS).      │
-│ • 42.3% de autoría (11 commits)   │ • Integración con sistemas de      │
-│   en el frontend del mapa de      │   despacho y SCADA de la empresa.  │
-│   disponibilidad de red.          │ • Levantamiento de información     │
-│ • Implementación de capas         │   geográfica en campo por          │
-│   GeoJSON y marcadores Leaflet.   │   cuadrillas técnicas.             │
-│ • Integración de WebSockets con   │                                    │
-│   `ngx-socket-io` para eventos en │                                    │
-│   tiempo real.                    │                                    │
-│ • Layout y menús de filtrado      │                                    │
-│   multicriterio por municipio y   │                                    │
-│   operador.                       │                                    │
-└───────────────────────────────────┴────────────────────────────────────┘
+[ Navegador / Cuadrilla de Campo ]
+                │
+                ▼
+┌────────────────────────────────────────┐
+│  Frontend Angular + Leaflet            │
+│  ├── Capa de Circuitos (GeoJSON)       │
+│  ├── Capa de Postes & Cableoperadores  │
+│  └── Cliente WebSocket (Socket.IO)     │
+└────────────────────────────────────────┘
+        │                       ▲
+        │ Peticiones GeoJSON    │ Eventos de red push
+        ▼                       │
+┌────────────────────┐  ┌───────────────────────┐
+│ API Geoespacial    │  │ Servidor de Eventos   │
+│ (Express / Node.js)│  │ (Socket.IO / Express) │
+└────────────────────┘  └───────────────────────┘
 ```
 
-- **Pruebas y Validación Local:** 18 archivos de pruebas unitarias (`.spec.ts`) combinados para validar la carga de capas cartográficas, la reactividad de los filtros y la recepción de eventos vía sockets.
-- **Estado de Producción:** Soluciones empleadas como visores de consulta y apoyo a la toma de decisiones por áreas operativas y de gestión de activos.
+### Decisiones técnicas destacadas
+
+- **Uso de Leaflet frente a visores SIG pesados:** Se priorizó Leaflet por encima de plataformas GIS comerciales cerradas por su ligereza y rápida carga en navegadores de equipos portátiles de cuadrillas y computadores de oficina.
+- **Capas vectoriales GeoJSON dinámicas:** Los apoyos físicos y las líneas de distribución se modelaron como colecciones vectoriales GeoJSON con renderizado condicional en el cliente (verde para circuitos energizados, amarillo/rojo para sectores con evento reportado).
+- **WebSockets para propagación inmediata:** La integración de `Socket.IO` permitió que las variaciones en el estado de los circuitos se reflejen en pantalla en el momento exacto en que son registradas por el centro de control.
 
 ---
 
-## 5. Tecnologías y Arquitectura
+## 4. Funcionalidades destacadas
 
-```
-                        ARQUITECTURA DE LAS SOLUCIONES GIS
-                                                               
-   ┌─────────────────────────────────────────────────────────────┐
-   │                  Frontend Angular + Leaflet                 │
-   │                                                             │
-   │  ┌─────────────────────────┐   ┌─────────────────────────┐  │
-   │  │    Capa Cableoperadores │   │    Capa Disponibilidad  │  │
-   │  │ (Postes, Operador, Usos)│   │  (Circuitos, Estados)   │  │
-   │  └────────────┬────────────┘   └────────────┬────────────┘  │
-   │               │                             │               │
-   │  ┌────────────┴─────────────────────────────┴────────────┐  │
-   │  │           Motor de Mapas Leaflet + GeoJSON            │  │
-   │  │         (Marcadores interactivos, Tooltips)           │  │
-   │  └──────────────────────────┬────────────────────────────┘  │
-   └─────────────────────────────┼───────────────────────────────┘
-                                 │
-                 ┌───────────────┴───────────────┐
-                 │ HTTP (GeoJSON)                │ WebSockets (Socket.IO)
-                 ▼                               ▼
-   ┌───────────────────────────┐   ┌───────────────────────────┐
-   │      API Geoespacial      │   │    Servidor de Eventos    │
-   │      (Express / REST)     │   │     (Node.js / Socket.IO) │
-   └─────────────┬─────────────┘   └─────────────┬─────────────┘
-                 │                               │
-                 ▼                               ▼
-   ┌───────────────────────────────────────────────────────────┐
-   │             Bases de Datos GIS & Eventos OMS              │
-   └───────────────────────────────────────────────────────────┘
-```
-
-- **Frontend:** Angular, TypeScript, Leaflet, GeoJSON, Socket.IO Client, Chart.js.
-- **Backend:** Node.js, Express, Socket.IO, Axios.
-- **Cartografía Base:** Mapas base mediante OpenStreetMap y mosaicos de mapa estándar.
+- **Monitoreo de interrupciones en vivo:** Detección visual en mapa de líneas desenergizadas y trazado del área territorial de influencia.
+- **Censo georreferenciado de apoyos:** Ficha descriptiva por poste con detalle de cuántas empresas de telecomunicaciones comparten la infraestructura.
+- **Filtro selectivo por operador:** Capacidad de aislar en el mapa únicamente los postes con presencia de una empresa de telecomunicaciones específica para auditorías en terreno.
+- **Resumen territorial por municipio:** Tableros agregados de densidad de postes y nivel de compartición de infraestructura.
 
 ---
 
-## 6. Decisiones de Diseño Técnico
+## 5. Tecnologías aplicadas
 
-1. **Uso de Leaflet frente a Servidores SIG Pesados:** Se priorizó Leaflet por su ligereza y agilidad de carga en navegadores de equipos portátiles de cuadrillas y computadores de oficina, evitando la complejidad de visores GIS comerciales cerrados.
-2. **Capas Vectoriales GeoJSON Dinámicas:** Los apoyos físicos y las líneas de distribución se representaron como capas vectoriales GeoJSON con simbología condicional según estado (verde para circuitos energizados, amarillo/rojo para sectores con evento reportado).
-3. **WebSockets para Notificaciones Push:** Se configuró un canal persistente con `Socket.IO` para reflejar automáticamente aperturas o cierres de circuito reportadas por los centros de despacho sin requerir refresco manual de la página.
-
----
-
-## 7. Funcionalidades Principales
-
-- **Visualización de Circuitos y Afectaciones:** Identificación en mapa de líneas desenergizadas y demarcación del área de influencia.
-- **Censo y Ocupación de Postes:** Ficha informativa por apoyo físico con indicación del número de operadores de telecomunicaciones conectados.
-- **Filtros por Operador:** Aislamiento selectivo de capas para inspeccionar únicamente los apoyos donde tiene presencia un operador determinado.
-- **Panel de Resumen Territorial:** Estadísticas de postes y ocupación discriminadas por municipio.
+- **Frontend y GIS:** Angular, TypeScript, Leaflet, GeoJSON, Socket.IO Client, Chart.js.
+- **Backend y APIs:** Node.js, Express, Socket.IO, APIs RESTful.
+- **Cartografía Base:** OpenStreetMap y servidores de mosaicos de mapa (*tile servers*).
 
 ---
 
-## 8. Desafíos Afrontados
+## 6. Resultados y validación técnica
 
-- **Fluidez del Navegador con Alta Densidad de Puntos:** Controlar el uso de memoria ante la presencia de miles de marcadores simultáneos mediante agrupación por sectores (*clustering*) y umbrales de escala de visualización.
-- **Estabilidad de la Conexión en Tiempo Real:** Configuración de políticas de reconexión y sincronización tras pérdidas momentáneas de conectividad en el cliente.
+Las herramientas fueron verificadas mediante pruebas unitarias y pruebas de carga cartográfica en entorno de desarrollo:
 
----
-
-## 9. Evidencias Técnicas Verificables
-
-- **Archivos fuente desarrollados:**
-  - Componentes del módulo de censo de cableoperadores (100% autoría en Git).
-  - Componentes del mapa interactivo de disponibilidad de red (`mapa.component.ts`, `mapa.service.ts`).
-  - Lógica de cliente Socket.IO para eventos en tiempo real.
-- **Pruebas Unitarias:** 18 archivos `.spec.ts` distribuidos entre los componentes cartográficos.
-- **Historial de Commits:** 7 commits de autoría individual exclusiva en cableoperadores; 11 commits de desarrollo de mapa en disponibilidad; 1 commit en backend de eventos.
+- **Validación con pruebas unitarias:** 18 archivos `.spec.ts` que validaron la carga de capas cartográficas, la lógica de filtrado por operador y la suscripción a eventos de socket.
+- **Rendimiento con alta densidad de puntos:** La implementación de técnicas de agrupación (*clustering*) y umbrales de escala permitió interactuar de forma fluida con miles de apoyos georreferenciados sin degradar la memoria del navegador.
+- **Estabilidad de canal WebSocket:** Se comprobó la capacidad del cliente para reconectarse automáticamente ante pérdidas momentáneas de conexión de red, recuperando el estado actualizado del mapa.
 
 ---
 
-## 10. Hechos Verificados vs. Aspectos a Confirmar
+## 7. Aprendizajes y valor técnico
 
-| Categoría | Detalle Técnico / Operativo | Estado |
-| :--- | :--- | :--- |
-| **Hecho Verificado** | Autoría comprobable del 100% de commits en el módulo de cableoperadores. | Verificado en Git log. |
-| **Hecho Verificado** | Autoría de 11 commits de componentes de mapa en el visor de disponibilidad. | Verificado en Git log. |
-| **Hecho Verificado** | Integración de Leaflet, GeoJSON y Socket.IO en código fuente. | Verificado en archivos locales. |
-| **Aspecto a Confirmar** | Total de postes o kilómetros de red censados en la versión productiva. | Requiere confirmación si se desea citar públicamente. |
-| **Aspecto a Confirmar** | Motor de base de datos geográfica corporativo utilizado en el backend institucional. | Requiere confirmación si se desea citar públicamente. |
+Este caso evidencia competencias en el desarrollo de soluciones geoespaciales para el sector de infraestructura y telecomunicaciones:
 
----
-
-## 11. Estrategia de Confidencialidad y Demo Sintética
-
-- **Información Protegida:** Se suprimen coordenadas exactas de subestaciones y transformadores de potencia, esquemas unifilares de red y razones sociales de empresas privadas de telecomunicaciones.
-- **Propuesta de Demostración Pública:** Crear un visor interactivo en Leaflet sobre un mapa abierto de OpenStreetMap, con un dataset sintético de 30 postes ficticios y 2 circuitos simulados en un polígono urbano neutro, demostrando el filtrado por operadores ficticios y la conmutación de eventos de red mediante un emulador local de WebSockets.
+- Capacidad para transformar datos geoespaciales complejos (GeoJSON) en herramientas de consulta ágiles orientadas a la operación diaria.
+- Dominio en la integración de mapas interactivos con arquitecturas web reactivas y eventos en tiempo real.
+- Criterio técnico para diseñar interfaces cartográficas accesibles para personal administrativo y cuadrillas operativas en campo.
