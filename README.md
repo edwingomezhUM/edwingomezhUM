@@ -2,7 +2,7 @@
 
 **Full-Stack Software Developer | Applied AI & NLP | Cloud Infrastructure | Data Engineering**
 
-Desarrollador de software con experiencia en **desarrollo web full-stack, inteligencia artificial aplicada, procesamiento de lenguaje natural (NLP), machine learning, bases de datos y administración de infraestructura cloud**. He participado en proyectos de investigación aplicada y transferencia tecnológica en el [DataLab de la Universidad de Manizales](https://github.com/DataLab-UM), contribuyendo al desarrollo de plataformas empresariales, sistemas de medición inteligente, soluciones geoespaciales, herramientas analíticas y asistentes conversacionales basados en IA.
+Desarrollador de software con experiencia en **desarrollo web full-stack, inteligencia artificial aplicada, procesamiento de lenguaje natural (NLP), machine learning, bases de datos y administración de infraestructura cloud**. He participado en proyectos de investigación aplicada y transferencia tecnológica en el [DataLab de la Universidad de Manizales], contribuyendo al desarrollo de plataformas empresariales, sistemas de medición inteligente, soluciones geoespaciales, herramientas analíticas y asistentes conversacionales basados en IA.
 
 Mi enfoque combina desarrollo de software, integración de servicios, análisis de datos e infraestructura tecnológica para construir soluciones escalables orientadas a resolver necesidades reales de negocio.
 
@@ -10,7 +10,7 @@ Mi enfoque combina desarrollo de software, integración de servicios, análisis 
 
 ## Professional Overview
 
-Software developer with experience in **full-stack web development, applied artificial intelligence, natural language processing (NLP), machine learning, database technologies, and cloud infrastructure administration**. I have contributed to applied research and technology transfer initiatives at [DataLab – Universidad de Manizales](https://github.com/DataLab-UM), working on enterprise platforms, smart metering systems, geospatial applications, data analytics, and conversational AI solutions.
+Software developer with experience in **full-stack web development, applied artificial intelligence, natural language processing (NLP), machine learning, database technologies, and cloud infrastructure administration**. I have contributed to applied research and technology transfer initiatives at [DataLab – Universidad de Manizales], working on enterprise platforms, smart metering systems, geospatial applications, data analytics, and conversational AI solutions.
 
 My technical approach combines software engineering, cloud technologies, data processing, and AI integration to develop practical solutions for complex business requirements.
 
@@ -24,7 +24,7 @@ Angular (v12–v18) · React · TypeScript · JavaScript (ES6+) · HTML5 · CSS3
 
 ### ⚙️ Backend y Desarrollo de APIs
 
-Node.js · Express.js · Python · Django · FastAPI · Flask · PHP · .NET / C# · REST APIs · WebSockets · Socket.IO · Server-Sent Events (SSE) · Microservicios
+Node.js · Express.js · Python · Django · FastAPI · Flask · PHP · .NET / C# · Java · REST APIs · WebSockets · Socket.IO · Server-Sent Events (SSE) · Microservicios
 
 ### 🤖 Inteligencia Artificial, NLP y Machine Learning
 
@@ -59,7 +59,7 @@ Los siguientes casos describen contribuciones técnicas realizadas en proyectos 
 | Proyecto | Dominio | Tecnologías principales |
 | :--- | :--- | :--- |
 | **Plataforma EdTech con RAG híbrido** | IA conversacional y recuperación de conocimiento | React, TypeScript, Node.js, BGE-M3, BM25, RRF |
-| **Plataforma de Medición Inteligente (AMI)** | IoT, analítica y dashboards empresariales | Angular, TypeScript, ApexCharts |
+| **Plataforma de Medición Inteligente (AMI)** | IoT, analítica y dashboards empresariales | Angular, TypeScript, ApexCharts, Node.js, SqlServer |
 | **Sistema de Gestión de Colas (SGCB)** | Aplicaciones empresariales y tiempo real | Angular, Bootstrap, Node.js |
 | **Visores Geoespaciales (GIS)** | Cartografía y monitoreo de infraestructura | Angular, Leaflet, GeoJSON, Socket.IO |
 | **Analítica de Voz del Cliente (VOC)** | NLP, procesamiento de texto y analítica | Python, Pandas, NLTK, spaCy, Docker |
@@ -101,6 +101,5 @@ Los casos de estudio se presentan con criterios de confidencialidad y protecció
 ## 📬 Contacto | Contact
 
 - **GitHub:** [@edwingomezhUM](https://github.com/edwingomezhUM)
-- **DataLab – Universidad de Manizales:** [GitHub Organization](https://github.com/DataLab-UM)
 - **Email:** edwingomezh@gmail.com
 
